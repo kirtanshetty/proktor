@@ -1,2 +1,9 @@
-bool vaild_action();
-bool vaild_file_path();
+#ifndef __PK_APP_VALIDATE_H__
+#define __PK_APP_VALIDATE_H__
+
+#include "common.h"
+
+int8_t get_vaild_action(char* action);
+bool vaild_file_path(char* path);
+
+#endif
