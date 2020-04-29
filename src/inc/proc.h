@@ -41,10 +41,10 @@ private:
   pk_name_t conf[FILE_PATH_LENGTH];
   // check_pk_proc_instance(name, file);
 
-  int start_pk_proc(__pk_proc* pkp);
-  int stop_pk_proc();
-  int restart_pk_proc();
-  int status_pk_proc();
+  // int start_pk_proc(__pk_proc* pkp);
+  // int stop_pk_proc();
+  // int restart_pk_proc();
+  // int status_pk_proc();
 public:
   pk_proc_h(pk_proc_options *ppo);
 };

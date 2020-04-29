@@ -7,7 +7,5 @@
 
 #define FILE_PATH_LENGTH 192
 #define PK_PROC_NAME_LENGTH 32
-#define LINE_DIVISION "-----------------------------------------------\n"
-#define TAB_SPACE "  "
 
 #endif

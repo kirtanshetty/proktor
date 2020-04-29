@@ -5,6 +5,9 @@
 
 #include "proktor.h"
 
+#define LINE_DIVISION "-----------------------------------------------\n"
+#define TAB_SPACE "  "
+
 pk_proc_action pkpa_map[] = {
   [0].action = "start",
   [0].id = AC_START,

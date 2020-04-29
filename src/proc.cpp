@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "inc/proc.h"
+#include "inc/action_handler.h"
 
 pk_proc_h::pk_proc_h(pk_proc_options *ppo){
   printf("pk_proc_h::pk_proc_h\n");
@@ -25,20 +26,4 @@ pk_proc_h::pk_proc_h(pk_proc_options *ppo){
 
     }
   }
-}
-
-int pk_proc_h::start_pk_proc(pk_proc *pkp){
-  printf("pk_proc_h::start_pk_proc\n");
-}
-
-int pk_proc_h::stop_pk_proc(){
-  printf("pk_proc_h::stop_pk_proc\n");
-}
-
-int pk_proc_h::restart_pk_proc(){
-  printf("pk_proc_h::restart_pk_proc\n");
-}
-
-int pk_proc_h::status_pk_proc(){
-  printf("pk_proc_h::status_pk_proc\n");
 }
