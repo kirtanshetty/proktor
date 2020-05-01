@@ -3,14 +3,6 @@
 #include "inc/proktor.h"
 #include "inc/validate.h"
 
-void exit_process(int code, const char* msg = NULL){
-  if(msg){
-    printf("Exit message: %s\n", msg);
-  }
-  printf("Exiting proktor\n");
-  exit(code);
-}
-
 void help_menu(){
   printf(LINE_DIVISION);
   printf("Help menu\n");
@@ -35,11 +27,9 @@ void invalid_option_value(char opt, char* val = NULL){
   }
 }
 
-int main(int argc, char **argv){
-  pk_proc_options ppo;
-
+void init_options(int count, char** args, pk_proc_options* ppo){
   int opt;
-  while((opt = getopt(argc, argv, ":ha:f:n:")) != -1){
+  while((opt = getopt(count, args, ":ha:f:n:e:c:")) != -1){
     switch(opt){
       case 'a':{
         int8_t act = get_vaild_action(optarg);
@@ -47,14 +37,32 @@ int main(int argc, char **argv){
           invalid_option_value(opt, optarg);
           exit_process(0);
         }
-        ppo.action = (pk_proc_action_vals)act;
+        ppo->action = (pk_proc_action_vals)act;
+
         break;
       }
       case 'f':{
         if(vaild_file_path(optarg))
-          strcpy(ppo.bin_path, optarg);
+          strcpy(ppo->file_path, optarg);
         else
-          exit_process(0, "invalid file path for option f.");
+          exit_process(0, "invalid file path for option -f.");
+
+        break;
+      }
+      case 'n':{
+        if(vaild_pk_proc_name(optarg))
+          strcpy(ppo->pk_proc_name, optarg);
+        else
+          exit_process(0, "invalid proktor process name for option -n.");
+
+        break;
+      }
+      case 'e':{
+        if(vaild_file_path(optarg))
+          strcpy(ppo->bin_path, optarg);
+        else
+          exit_process(0, "invalid binary path for option -e.");
+
         break;
       }
       case 'h':
@@ -62,14 +70,21 @@ int main(int argc, char **argv){
         exit_process(0);
       case ':':
         invalid_option_value(optopt);
+
         break;
       case '?':
         invalid_option(optopt);
+
         break;
     }
   }
+}
 
+int main(int argc, char **argv){
+  pk_proc_options ppo;
+  init_options(argc, argv, &ppo);
   pk_proc_h pkph(&ppo);
+  pkph.run();
 
   return 0;
 }

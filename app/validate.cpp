@@ -20,3 +20,7 @@ bool vaild_file_path(char* path){
 
   return false;
 }
+
+bool vaild_pk_proc_name(char* name){
+  return true;
+}
