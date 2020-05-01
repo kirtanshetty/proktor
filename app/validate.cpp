@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "inc/validate.h"
+#include <proktor.h>
+#include <validate.h>
 
 int8_t get_vaild_action(char* action){
   for(int i = 0; i < pkpa_map_length; i++){

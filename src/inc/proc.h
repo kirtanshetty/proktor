@@ -1,7 +1,7 @@
 #ifndef __PK_SRC_PROC_H__
 #define __PK_SRC_PROC_H__
 
-#include "common.h"
+#include <common.h>
 
 typedef uint8_t pk_inst_t;
 typedef char pk_name_t;

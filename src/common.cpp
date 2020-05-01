@@ -1,4 +1,4 @@
-#include "inc/common.h"
+#include <common.h>
 
 const char* pk_proc_tag = PK_PROC_NAME_TAG;
 

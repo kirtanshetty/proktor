@@ -1,7 +1,7 @@
 #ifndef __PK_SRC_ACTION_HANDLER_H__
 #define __PK_SRC_ACTION_HANDLER_H__
 
-#include "proc.h"
+#include <proc.h>
 
 #define VAL_HELP_MSG "Check option -h for help."
 #define VAL_ERR_MSG(act, params) "Mandatory parameters for \'" act "\' action are: " params "\n" VAL_HELP_MSG

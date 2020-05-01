@@ -1,17 +1,19 @@
 #include <iostream>
 
-#include "inc/proktor.h"
-#include "inc/validate.h"
+#include <log.h>
+#include <proktor.h>
+#include <validate.h>
+#include <logger.h>
 
 void help_menu(){
-  printf(LINE_DIVISION);
-  printf("Help menu\n");
-  printf(LINE_DIVISION);
-  printf("Usage: \n");
-  printf("a - action\n");
-  printf("f - program file path\n");
-  printf("h - help menu\n");
-  printf(LINE_DIVISION);
+  LOG(L_MSG) << LINE_DIVISION;
+  LOG(L_MSG) << "Help menu";
+  LOG(L_MSG) << LINE_DIVISION;
+  LOG(L_MSG) << "Usage:";
+  LOG(L_MSG) << "a - action";
+  LOG(L_MSG) << "f - program file path";
+  LOG(L_MSG) << "h - help menu";
+  LOG(L_MSG) << LINE_DIVISION;
 }
 
 void invalid_option(char opt){
@@ -28,6 +30,7 @@ void invalid_option_value(char opt, char* val = NULL){
 }
 
 void init_options(int count, char** args, pk_proc_options* ppo){
+  FBEG;
   int opt;
   while((opt = getopt(count, args, ":ha:f:n:e:")) != -1){
     switch(opt){
@@ -78,6 +81,7 @@ void init_options(int count, char** args, pk_proc_options* ppo){
         break;
     }
   }
+  FEND;
 }
 
 int main(int argc, char **argv){

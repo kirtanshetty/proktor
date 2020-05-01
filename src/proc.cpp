@@ -1,7 +1,7 @@
 #include <string.h>
 
-#include "inc/proc.h"
-#include "inc/action_handler.h"
+#include <proc.h>
+#include <action_handler.h>
 
 pk_proc_h::pk_proc_h(pk_proc_options *ppo){
   printf("pk_proc_h::pk_proc_h\n");

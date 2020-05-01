@@ -1,7 +1,7 @@
 #ifndef __PK_APP_PROKTOR_H__
 #define __PK_APP_PROKTOR_H__
 
-#include "../../src/inc/proc.h"
+#include <proc.h>
 
 typedef int (*action_handler)(pk_proc*);
 
