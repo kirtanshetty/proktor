@@ -29,7 +29,7 @@ void invalid_option_value(char opt, char* val = NULL){
 
 void init_options(int count, char** args, pk_proc_options* ppo){
   int opt;
-  while((opt = getopt(count, args, ":ha:f:n:e:c:")) != -1){
+  while((opt = getopt(count, args, ":ha:f:n:e:")) != -1){
     switch(opt){
       case 'a':{
         int8_t act = get_vaild_action(optarg);

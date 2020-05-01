@@ -3,6 +3,10 @@
 
 #include "proc.h"
 
+#define VAL_HELP_MSG "Check option -h for help."
+#define VAL_ERR_MSG(act, params) "Mandatory parameters for \'" act "\' action are: " params "\n" VAL_HELP_MSG
+#define VAL_START_AC_MSG VAL_ERR_MSG("start", "-a -e")
+
 int start_pk_proc(pk_proc* pkp);
 int stop_pk_proc(pk_proc *pkp);
 int restart_pk_proc(pk_proc *pkp);
