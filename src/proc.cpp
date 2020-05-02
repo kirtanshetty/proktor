@@ -1,13 +1,13 @@
 #include <string.h>
 
+#include <log.h>
 #include <proc.h>
 #include <action_handler.h>
 
 pk_proc_h::pk_proc_h(pk_proc_options *ppo){
-  printf("pk_proc_h::pk_proc_h\n");
+  FBEG;
 
   action = ppo->action;
-
   memset(&pkp, 0, sizeof(pkp));
 
   if(strlen(ppo->bin_path))
@@ -18,6 +18,8 @@ pk_proc_h::pk_proc_h(pk_proc_options *ppo){
 
   if(strlen(ppo->pk_proc_name))
     strcpy(pkp.name, ppo->pk_proc_name);
+
+  FEND;
 }
 
 void pk_proc_h::run(){

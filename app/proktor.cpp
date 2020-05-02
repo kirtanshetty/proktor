@@ -17,16 +17,14 @@ void help_menu(){
 }
 
 void invalid_option(char opt){
-  printf("invalid option: %c\n", opt);
+  LOG(L_ERR) << "invalid option:\n" << opt;
 }
 
 void invalid_option_value(char opt, char* val = NULL){
-  if(val == NULL){
-    printf("option \"%c\" needs a value\n", opt);
-  }
-  else{
-    printf("invalid value \"%s\" for option \"%c\".\n", val, opt);
-  }
+  if(val == NULL)
+    LOG(L_ERR) << "option \"" << opt << "\" needs a value";
+  else
+    LOG(L_ERR) << "invalid value \"" << val << "\" for option \""<< opt <<"\".";
 }
 
 void init_options(int count, char** args, pk_proc_options* ppo){

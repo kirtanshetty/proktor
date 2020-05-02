@@ -1,12 +1,13 @@
+#include <log.h>
 #include <common.h>
 
 const char* pk_proc_tag = PK_PROC_NAME_TAG;
 
 void exit_process(int code, const char* msg){
   if(msg){
-    printf("Exit message: %s\n", msg);
+    LOG(L_ERR) << "Exit message:" << msg;
   }
-  printf("Exiting proktor.\n");
+  LOG(L_ERR) << "Exiting proktor.";
   exit(code);
 }
 
