@@ -14,6 +14,7 @@ int8_t get_vaild_action(char* action){
 }
 
 bool vaild_file_path(char* path){
+  return true;
   if(access(path, F_OK) != -1){
     return true;
   }

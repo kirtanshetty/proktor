@@ -12,8 +12,9 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  char *args[]={"./EXEC",NULL};
-  execvp(args[0],args);
+
+  char *args[]= {"node", "/Users/kirtan/personal/proktor/test/nodejs/loop.js"};
+  execvp("node", args);
   printf("Ending-----");
 
   return 0;

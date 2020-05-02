@@ -9,9 +9,15 @@ void __pk_process(pk_proc *pkp_instance){
   pkp_instance->pid = getpid();
   LOG(L_MSG) << "proktor process started with pid:" << pkp_instance->pid;
 
-  if(!strlen(pkp_instance->file)){
+  if(strlen(pkp_instance->file)){
+    LOG(L_MSG) << "proktor process executing the binary with the file.";
+    char *args[]= { pkp_instance->binary, pkp_instance->file, NULL};
+    execvp(pkp_instance->binary, args);
+  }
+  else{
     LOG(L_MSG) << "proktor process executing the binary.";
-    // execvp(pkp_instance->binary, NULL);
+    char *args[] = { pkp_instance->binary, NULL};
+    execvp(pkp_instance->binary, args);
   }
 }
 
