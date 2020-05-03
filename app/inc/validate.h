@@ -3,6 +3,7 @@
 
 int8_t get_vaild_action(char* action);
 bool vaild_file_path(char* path);
+bool vaild_dir_path(char* path);
 bool vaild_pk_proc_name(char* name);
 
 #endif

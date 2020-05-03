@@ -57,7 +57,8 @@ public:
   ~LOG_IT(){
     if(COLOR_LOG) _buffer << "\033[0m";
     _buffer << std::endl;
-    std::cerr << _buffer.str();
+    if(sev == L_ERR) std::cerr << _buffer.str();
+    else std::cout << _buffer.str();
 
     // if(sev == L_FAT) exit(1);
   }

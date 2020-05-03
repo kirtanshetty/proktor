@@ -7,12 +7,12 @@
 #define VAL_ERR_MSG(act, params) "Mandatory parameters for \'" act "\' action are: " params "\n" VAL_HELP_MSG
 #define VAL_START_AC_MSG VAL_ERR_MSG("start", "-a -e")
 
-int start_pk_proc(pk_proc* pkp);
-int stop_pk_proc(pk_proc *pkp);
-int restart_pk_proc(pk_proc *pkp);
-int status_pk_proc(pk_proc *pkp);
+int start_pk_proc(pk_mon *pkm, pk_proc *pkp);
+int stop_pk_proc(pk_mon *pkm, pk_proc *pkp);
+int restart_pk_proc(pk_mon *pkm, pk_proc *pkp);
+int status_pk_proc(pk_mon *pkm, pk_proc *pkp);
 
-typedef int (*action_handler)(pk_proc*);
+typedef int (*action_handler)(pk_mon*, pk_proc*);
 
 struct __pk_proc_action_handlers {
   pk_proc_action_vals id;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sys/stat.h>
 
 #include <proktor.h>
 #include <validate.h>
@@ -15,11 +16,25 @@ int8_t get_vaild_action(char* action){
 
 bool vaild_file_path(char* path){
   return true;
-  if(access(path, F_OK) != -1){
+  if(access(path, W_OK) != -1){
     return true;
   }
 
   return false;
+}
+
+bool vaild_dir_path(char* path){
+  struct stat file;
+
+  if (stat(path, &file) < 0){
+    return false;
+  }
+
+  if (!S_ISDIR(file.st_mode)){
+    return false;
+  };
+
+  return true;
 }
 
 bool vaild_pk_proc_name(char* name){

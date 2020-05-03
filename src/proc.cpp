@@ -7,21 +7,37 @@
 pk_proc_h::pk_proc_h(pk_proc_options *ppo){
   FBEG;
 
+  bool file_op = false;
   action = ppo->action;
+
   memset(&pkp, 0, sizeof(pkp));
+  memset(&pkm, 0, sizeof(pkm));
 
   if(strlen(ppo->bin_path))
     strcpy(pkp.binary, ppo->bin_path);
 
-  if(strlen(ppo->file_path))
+  if(strlen(ppo->file_path)){
+    file_op = true;
     strcpy(pkp.file, ppo->file_path);
+  }
 
   if(strlen(ppo->pk_proc_name))
     strcpy(pkp.name, ppo->pk_proc_name);
+  else{
+    if(file_op)
+      get_pk_proc_name_from_path(ppo->file_path, pkp.name);
+    else
+      get_pk_proc_name_from_path(ppo->bin_path, pkp.name);
+  }
+
+  get_pk_mon_log_file(ppo->pk_log_path, pkm.log);
+
+  // LOG(L_DBG) << "pkp.name: " << pkp.name;
+  // LOG(L_DBG) << "pkm.log: " << pkm.log;
 
   FEND;
 }
 
 void pk_proc_h::run(){
-  pkpah_map[action].handler(&pkp);
+  pkpah_map[action].handler(&pkm, &pkp);
 }
