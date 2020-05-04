@@ -23,8 +23,6 @@ uint8_t __add_pk_proc_tag(char* name, uint8_t index, const char* pk_proc_tag){
 int16_t __last_slash_index(char* path){
   int slash_index, path_length = strlen(path);
 
-  printf("__last_slash_index, path_length = %d\n", path_length);
-
   for(slash_index = path_length - 1; slash_index >= 0; slash_index--){
     if(path[slash_index] == '/')
       break;
@@ -44,11 +42,20 @@ void get_pk_proc_name_from_path(char* path, char* dest){
   }
 }
 
-void get_pk_mon_log_file(char* path, char* dest){
+void get_pk_log_file(char* path, char* dest, const char* tag){
   int path_length = strlen(path);
 
   strcpy(dest, path);
   dest[path_length] = '/';
 
-  __add_pk_proc_tag(dest, path_length + 1, PK_MON_LOG_FILE);
+  __add_pk_proc_tag(dest, path_length + 1, tag);
+}
+
+bool pk_proc_restart(int stat){
+  int length = sizeof(VALID_EXIT_SIGNALS)/sizeof(VALID_EXIT_SIGNALS[0]);
+
+  for(int i = 0; i < length; i++)
+    if(stat == VALID_EXIT_SIGNALS[i]) return false;
+
+  return true;
 }

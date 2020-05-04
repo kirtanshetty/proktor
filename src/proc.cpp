@@ -30,7 +30,8 @@ pk_proc_h::pk_proc_h(pk_proc_options *ppo){
       get_pk_proc_name_from_path(ppo->bin_path, pkp.name);
   }
 
-  get_pk_mon_log_file(ppo->pk_log_path, pkm.log);
+  get_pk_log_file(ppo->pk_log_path, pkm.log, PK_MON_LOG_FILE);
+  // get_pk_log_file(ppo->pk_proc_log_path, pkp.log, PK_MON_LOG_FILE);
 
   // LOG(L_DBG) << "pkp.name: " << pkp.name;
   // LOG(L_DBG) << "pkm.log: " << pkm.log;
@@ -40,4 +41,5 @@ pk_proc_h::pk_proc_h(pk_proc_options *ppo){
 
 void pk_proc_h::run(){
   pkpah_map[action].handler(&pkm, &pkp);
+  // will execute for all child
 }
