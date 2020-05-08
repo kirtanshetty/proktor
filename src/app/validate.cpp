@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <proktor.h>
 #include <validate.h>

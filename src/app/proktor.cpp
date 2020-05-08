@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 
 #include <log.h>
 #include <proktor.h>
@@ -31,19 +32,19 @@ void init_options(int count, char** args, pk_proc_options* ppo){
   FBEG;
   int opt;
 
-  const char* plp = getenv("PROKTOR_LOG_PATH");
+  const char* pp = getenv("PROKTOR_PATH");
   const char* pplp = getenv("PROKTOR_PROCESS_LOG_PATH");
 
-  if(plp == NULL || pplp == NULL)
+  if(pp == NULL || pplp == NULL)
     exit_process(0, "(PROKTOR_LOG_PATH|PROKTOR_PROCESS_LOG_PATH) environment variable missing. They should be a valid directory path.");
 
-  if(!vaild_dir_path((char*)plp) || !vaild_dir_path((char*)pplp))
+  if(!vaild_dir_path((char*)pp) || !vaild_dir_path((char*)pplp))
     exit_process(0, "invalid (PROKTOR_LOG_PATH|PROKTOR_PROCESS_LOG_PATH) value. Directory with write access needed for application files.");
 
-  strcpy(ppo->pk_log_path, plp);
+  strcpy(ppo->pk_log_path, pp);
   strcpy(ppo->pk_proc_log_path, pplp);
 
-  LOG(L_DBG) << "PROKTOR_LOG_PATH: " << plp;
+  LOG(L_DBG) << "PROKTOR_LOG_PATH: " << pp;
   LOG(L_DBG) << "PROKTOR_PROCESS_LOG_PATH: " << pplp;
 
   while((opt = getopt(count, args, ":ha:f:n:e:")) != -1){
@@ -102,8 +103,6 @@ void init_options(int count, char** args, pk_proc_options* ppo){
 int main(int argc, char **argv){
   pk_proc_options ppo;
   init_options(argc, argv, &ppo);
-  pk_proc_h pkph(&ppo);
-  pkph.run();
-
+  run_proc_h(&ppo);
   return 0;
 }

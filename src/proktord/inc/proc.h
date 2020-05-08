@@ -3,8 +3,8 @@
 
 #include <common.h>
 
-typedef uint8_t pk_inst_t;
-typedef char pk_name_t;
+#define PK_PROC_NAME_TAG "proktor:"
+#define PK_MON_LOG_FILE "proktor.out"
 
 typedef enum {
   ST_UNAVAILABLE,
@@ -12,26 +12,10 @@ typedef enum {
   ST_STOPPED
 } pk_proc_status;
 
-typedef enum {
-  AC_START,
-  AC_STOP,
-  AC_RESTART,
-  AC_STATUS
-} pk_proc_action_vals;
-
-// options accepted by the process handler
-typedef struct __pk_proc_options{
-  pk_proc_action_vals action;
-  pk_name_t pk_proc_name[PK_PROC_NAME_LENGTH];
-  pk_name_t pk_log_path[FILE_PATH_LENGTH];
-  pk_name_t pk_proc_log_path[FILE_PATH_LENGTH];
-  pk_name_t file_path[FILE_PATH_LENGTH];
-  pk_name_t bin_path[FILE_PATH_LENGTH];
-} pk_proc_options;
-
 typedef struct __pk_mon {
   pid_t pid;
   pk_name_t log[FILE_PATH_LENGTH];
+  pk_name_t pk_md[FILE_PATH_LENGTH];
 } pk_mon;
 
 // definition of a process
@@ -44,6 +28,11 @@ typedef struct __pk_proc {
   pk_name_t binary[FILE_PATH_LENGTH];
   pk_name_t log[FILE_PATH_LENGTH];
 } pk_proc;
+
+// list of processes
+// typedef struct __pk_proc_list_meta {
+//   uint32_t count;
+// } pk_proc_list_meta;
 
 // definition of a process handler
 class pk_proc_h {

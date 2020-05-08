@@ -17,12 +17,12 @@ SET(CMAKE_C_FLAGS "-std=c11")
 SET(CMAKE_CXX_FLAGS "-std=c++11 -O3 -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath \$<))\"'")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
 
-FILE(GLOB PK_SOURCES "src/*" "app/*")
+FILE(GLOB PK_SOURCES "src/proktord/*" "src/app/*" "src/common/*")
 ADD_LIBRARY(proktor STATIC ${PK_SOURCES})
 
-TARGET_INCLUDE_DIRECTORIES(proktor PUBLIC "src/inc" "app/inc" "lib")
+TARGET_INCLUDE_DIRECTORIES(proktor PUBLIC "src/proktord/inc" "src/app/inc" "src/common/inc" "lib")
 
-FILE(GLOB SOURCES_PROCTOR "app/proktor.cpp")
+FILE(GLOB SOURCES_PROCTOR "src/app/proktor.cpp")
 ADD_EXECUTABLE(test_proktor ${SOURCES_PROCTOR})
 TARGET_LINK_LIBRARIES(test_proktor proktor ${PLATFORM_LINKER_FLAGS})
 

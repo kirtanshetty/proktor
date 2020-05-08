@@ -3,6 +3,7 @@
 #include <sys/wait.h>
 
 #include <log.h>
+#include <proc.h>
 #include <action_handler.h>
 #include <common.h>
 
@@ -18,11 +19,9 @@ pid_t __start_new_process(){
 }
 
 void __redirect_output(char* pk_out, char* pk_err){
+  setvbuf(stdout, NULL, _IONBF, 0);
   int fd_out = OPEN_LOG(pk_out);
   int fd_err = OPEN_LOG(pk_err);
-
-  printf("__redirect_output:fd_out %d\n", fd_out);
-  printf("__redirect_output:fd_err %d\n", fd_err);
 
   if(fd_out < 0){
     LOG(L_FAT) << "Couldn't create output log file for monitor process at " << pk_out << " , rc " << fd_out;
@@ -36,23 +35,18 @@ void __redirect_output(char* pk_out, char* pk_err){
 
   dup2(fd_out, STDOUT_FD);
   dup2(fd_err, STDERR_FD);
+
+  close(STDOUT_FD);
+  close(STDERR_FD);
 }
 
 void __pk_process(pk_proc *pkp_instance){
-  __redirect_output("/Users/kirtan/personal/proktor/proktor.out", "/Users/kirtan/personal/proktor/proktor.out");
   pkp_instance->pid = getpid();
   LOG(L_MSG) << "proktor process started with pid:" << pkp_instance->pid;
-
-  if(strlen(pkp_instance->file)){
-    LOG(L_MSG) << "proktor process executing the binary with the file.";
-    char *args[]= { pkp_instance->binary, pkp_instance->file, NULL};
-    EXECTION_CMD(pkp_instance->binary, args);
-  }
-  else{
-    LOG(L_MSG) << "proktor process executing the binary.";
-    char *args[] = { pkp_instance->binary, NULL};
-    EXECTION_CMD(pkp_instance->binary, args);
-  }
+  printf("-----------------\n");
+  LOG(L_MSG) << "proktor process executing the binary: " << pkp_instance->binary;
+  char *argx[]= { pkp_instance->binary, strlen(pkp_instance->file) ? pkp_instance->file : NULL , NULL};
+  // EXECTION_CMD(pkp_instance->binary, argx);
 }
 
 void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
@@ -71,11 +65,15 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
       return;
     }
     else{
+      // update metadata.
+
+      // get_process_list();
+
       LOG(L_MSG) << "waiting for the child process " << pkp_instance->name << "(" << pkp_instance->pid << ")";
       int wait_stat;
       wait(&wait_stat);
       LOG(L_MSG) << "child process " << pkp_instance->name << "(" << pkp_instance->pid << ")" << " terminated with rc " << wait_stat;
-      if(!pk_proc_restart(wait_stat)){
+      if(!pk_proc_valid_exit(wait_stat)){
         LOG(L_MSG) << "exiting monitor for " << pkp_instance->name;
         break;
       }

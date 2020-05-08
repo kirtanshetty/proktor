@@ -1,9 +1,9 @@
 #ifndef __PK_APP_PROKTOR_H__
 #define __PK_APP_PROKTOR_H__
 
-#include <proc.h>
+#include <common.h>
 
-typedef int (*action_handler)(pk_proc*);
+// typedef int (*action_handler)(pk_proc*);
 
 struct __pk_proc_action {
   const char* action;
