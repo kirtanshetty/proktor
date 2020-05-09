@@ -6,6 +6,7 @@
 #include <proc.h>
 #include <action_handler.h>
 #include <common.h>
+#include <utils.h>
 
 
 #define OPEN_LOG(file) open(file, O_CREAT | O_APPEND | O_WRONLY, S_IRUSR | S_IWUSR)
@@ -19,7 +20,6 @@ pid_t __start_new_process(){
 }
 
 void __redirect_output(char* pk_out, char* pk_err){
-  setvbuf(stdout, NULL, _IONBF, 0);
   int fd_out = OPEN_LOG(pk_out);
   int fd_err = OPEN_LOG(pk_err);
 

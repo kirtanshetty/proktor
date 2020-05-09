@@ -1,4 +1,10 @@
+#include <log.h>
 #include <pdc.h>
+#include <utils.h>
+
+#include <proc.h>
+#include <metadata.h>
+#include <action_handler.h>
 
 void run_proc_h(pk_proc_options *ppo){
   FBEG;
@@ -32,13 +38,6 @@ void run_proc_h(pk_proc_options *ppo){
   get_pk_file(ppo->pk_log_path, pkm.pk_md, PK_METADATA_FILE);
 
   pkpah_map[ppo->action].handler(&pkm, &pkp);
-
-
-
-  // get_pk_log_file(ppo->pk_proc_log_path, pkp.log, PK_MON_LOG_FILE);
-
-  // LOG(L_DBG) << "pkp.name: " << pkp.name;
-  // LOG(L_DBG) << "pkm.log: " << pkm.log;
 
   FEND;
 }

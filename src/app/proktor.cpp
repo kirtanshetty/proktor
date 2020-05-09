@@ -5,16 +5,17 @@
 #include <proktor.h>
 #include <validate.h>
 #include <logger.h>
+#include <pdc.h>
 
 void help_menu(){
-  LOG(L_MSG) << LINE_DIVISION;
-  LOG(L_MSG) << "Help menu";
-  LOG(L_MSG) << LINE_DIVISION;
-  LOG(L_MSG) << "Usage:";
-  LOG(L_MSG) << "a - action";
-  LOG(L_MSG) << "f - program file path";
-  LOG(L_MSG) << "h - help menu";
-  LOG(L_MSG) << LINE_DIVISION;
+  fprintf(stdout, LINE_DIVISION);
+  fprintf(stdout, "Help menu");
+  fprintf(stdout, LINE_DIVISION);
+  fprintf(stdout, "Usage:");
+  fprintf(stdout, "a - action");
+  fprintf(stdout, "f - program file path");
+  fprintf(stdout, "h - help menu");
+  fprintf(stdout, LINE_DIVISION);
 }
 
 void invalid_option(char opt){

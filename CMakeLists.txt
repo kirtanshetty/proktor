@@ -17,7 +17,7 @@ SET(CMAKE_C_FLAGS "-std=c11")
 SET(CMAKE_CXX_FLAGS "-std=c++11 -O3 -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath \$<))\"'")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
 
-FILE(GLOB PK_SOURCES "src/proktord/*" "src/app/*" "src/common/*")
+FILE(GLOB PK_SOURCES "src/common/*" "src/proktord/*" "src/app/*")
 ADD_LIBRARY(proktor STATIC ${PK_SOURCES})
 
 TARGET_INCLUDE_DIRECTORIES(proktor PUBLIC "src/proktord/inc" "src/app/inc" "src/common/inc" "lib")

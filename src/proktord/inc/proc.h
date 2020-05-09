@@ -35,15 +35,15 @@ typedef struct __pk_proc {
 // } pk_proc_list_meta;
 
 // definition of a process handler
-class pk_proc_h {
-private:
-  pk_proc_action_vals action;
-  pk_proc pkp;
-  pk_mon pkm;
+// class pk_proc_h {
+// private:
+//   pk_proc_action_vals action;
+//   pk_proc pkp;
+//   pk_mon pkm;
 
-public:
-  pk_proc_h(pk_proc_options *ppo);
-  void run();
-};
+// public:
+//   pk_proc_h(pk_proc_options *ppo);
+//   // void run();
+// };
 
 #endif
