@@ -1,3 +1,17 @@
+#ifndef __SRC_PK_METADATA_H__
+#define __SRC_PK_METADATA_H__
+
+#include <proc.h>
+
 #define PK_METADATA_FILE "proktor_proc.md"
 
-void get_process_list(void* buf);
+typedef union __proc_list_buf {
+  uint8_t* buf;
+  pk_proc_list* list;
+} proc_list_buf;
+
+void add_proc_to_list(pk_proc* new_proc);
+void dump_proc_list(char* path, proc_list_buf* _plb);
+void get_proc_list(char* path, proc_list_buf* _plb);
+
+#endif

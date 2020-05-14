@@ -57,7 +57,13 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
 
   while(true){
     // Decide instance iid
-    if(!pkp_instance->iid) pkp_instance->iid = 1;
+    if(!pkp_instance->iid){
+      proc_list_buf plb;
+      memset(&plb, 0, sizeof(proc_list_buf));
+      get_proc_list(pkm_instance->pk_md, &plb);
+
+      pkp_instance->iid = 1;
+    }
 
     pkp_instance->pid = __start_new_process();
     if(pkp_instance->pid == 0){
@@ -66,9 +72,6 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     }
     else{
       // update metadata.
-
-      // get_process_list();
-
       LOG(L_MSG) << "waiting for the child process " << pkp_instance->name << "(" << pkp_instance->pid << ")";
       int wait_stat;
       wait(&wait_stat);
