@@ -7,6 +7,7 @@
 #include <action_handler.h>
 #include <common.h>
 #include <utils.h>
+#include <metadata.h>
 
 
 #define OPEN_LOG(file) open(file, O_CREAT | O_APPEND | O_WRONLY, S_IRUSR | S_IWUSR)
@@ -33,11 +34,14 @@ void __redirect_output(char* pk_out, char* pk_err){
     exit_process(1, "Unable to create log file");
   }
 
+  LOG(L_DBG) << "__redirect_output:pk_out:" << pk_out << ":" << fd_out;
+  LOG(L_DBG) << "__redirect_output:pk_err:" << pk_err << ":" << fd_err;
+
   dup2(fd_out, STDOUT_FD);
   dup2(fd_err, STDERR_FD);
 
-  close(STDOUT_FD);
-  close(STDERR_FD);
+  // close(STDOUT_FD);
+  // close(STDERR_FD);
 }
 
 void __pk_process(pk_proc *pkp_instance){
@@ -53,15 +57,36 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
   __redirect_output(pkm_instance->log, pkm_instance->log);
 
   pkm_instance->pid = pkp_instance->m_pid = getpid();
-  LOG(L_MSG) << "monitor started with pid:" << pkp_instance->m_pid;
+  LOG(L_MSG) << "monitor started with pid:" << pkp_instance->m_pid << ", iid:" << pkp_instance->iid;
 
   while(true){
     // Decide instance iid
+    LOG(L_MSG) << "outside iid:" << pkp_instance->iid;
     if(!pkp_instance->iid){
+      LOG(L_MSG) << "inside iid:" << pkp_instance->iid;
       proc_list_buf plb;
+      printf("before: plb %d\n", plb);
+      printf("before: plb %p\n", &plb);
+      printf("before: plb.list %p\n", &plb.list);
       memset(&plb, 0, sizeof(proc_list_buf));
-      get_proc_list(pkm_instance->pk_md, &plb);
+      printf("before: plb %d\n", plb);
 
+      // sleep(5);
+
+      get_proc_list(pkm_instance->pk_md, &plb);
+      add_proc_to_list(pkp_instance, &plb);
+      printf("after get_proc_list: plb %d\n", plb);
+      printf("after get_proc_list: &plb.list %p\n", &plb.list);
+      printf("after get_proc_list: &plb.list->length %d\n", plb.list->length);
+      // printf("after get_proc_list: plb.list addr %d\n", ((uint16_t*)(&plb.list))[0]);
+      // LOG(L_DBG) << "plb.list->length" << plb.list->length;
+      // printf("after get_proc_list: plb length %d\n", plb.list->length);
+      // add_proc_to_list(pkp_instance, &plb);
+      // dump_proc_list(pkm_instance->pk_md, &plb);
+
+      printf("after: plb %p\n", &plb);
+      printf("after: plb.list %p\n", &plb.list);
+      // LOG(L_MSG) << "plb.list.length:" << plb.list->length;
       pkp_instance->iid = 1;
     }
 

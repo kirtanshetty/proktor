@@ -37,15 +37,15 @@ void init_options(int count, char** args, pk_proc_options* ppo){
   const char* pplp = getenv("PROKTOR_PROCESS_LOG_PATH");
 
   if(pp == NULL || pplp == NULL)
-    exit_process(0, "(PROKTOR_LOG_PATH|PROKTOR_PROCESS_LOG_PATH) environment variable missing. They should be a valid directory path.");
+    exit_process(0, "(PROKTOR_PATH|PROKTOR_PROCESS_LOG_PATH) environment variable missing. They should be a valid directory path.");
 
   if(!vaild_dir_path((char*)pp) || !vaild_dir_path((char*)pplp))
-    exit_process(0, "invalid (PROKTOR_LOG_PATH|PROKTOR_PROCESS_LOG_PATH) value. Directory with write access needed for application files.");
+    exit_process(0, "invalid (PROKTOR_PATH|PROKTOR_PROCESS_LOG_PATH) value. Directory with write access needed for application files.");
 
   strcpy(ppo->pk_log_path, pp);
   strcpy(ppo->pk_proc_log_path, pplp);
 
-  LOG(L_DBG) << "PROKTOR_LOG_PATH: " << pp;
+  LOG(L_DBG) << "PROKTOR_PATH: " << pp;
   LOG(L_DBG) << "PROKTOR_PROCESS_LOG_PATH: " << pplp;
 
   while((opt = getopt(count, args, ":ha:f:n:e:")) != -1){

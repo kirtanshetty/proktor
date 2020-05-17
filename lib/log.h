@@ -54,6 +54,10 @@ public:
     _buffer << value;
     return *this;
   }
+  LOG_IT & operator<<(uint8_t value){
+    _buffer << (int)value;
+    return *this;
+  }
   ~LOG_IT(){
     if(COLOR_LOG) _buffer << "\033[0m";
     _buffer << std::endl;

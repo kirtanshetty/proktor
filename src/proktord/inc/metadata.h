@@ -10,7 +10,7 @@ typedef union __proc_list_buf {
   pk_proc_list* list;
 } proc_list_buf;
 
-void add_proc_to_list(pk_proc* new_proc);
+void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb);
 void dump_proc_list(char* path, proc_list_buf* _plb);
 void get_proc_list(char* path, proc_list_buf* _plb);
 
