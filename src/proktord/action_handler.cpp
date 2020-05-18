@@ -75,9 +75,21 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
 
       get_proc_list(pkm_instance->pk_md, &plb);
       add_proc_to_list(pkp_instance, &plb);
-      printf("after get_proc_list: plb %d\n", plb);
+
+      printf("after pkp_instance->pid %d\n", pkp_instance->pid);
+      printf("after pkp_instance->m_pid %d\n", pkp_instance->m_pid);
+      printf("after pkp_instance->name %s\n", pkp_instance->name);
+      printf("after get_proc_list: plb %p\n", plb);
       printf("after get_proc_list: &plb.list %p\n", &plb.list);
-      printf("after get_proc_list: &plb.list->length %d\n", plb.list->length);
+      printf("after get_proc_list: plb.list->length %d\n", plb.list->length);
+      printf("after get_proc_list: plb.list[0].name %s\n", plb.list->entries[0].name);
+
+      LOG(L_DBG) << "plb.list->entries[0].pid : " << plb.list->entries[0].pid;
+      LOG(L_DBG) << "plb.list->entries[0].m_pid : " << plb.list->entries[0].m_pid;
+      LOG(L_DBG) << "plb.list->entries[0].name : " << plb.list->entries[0].name;
+      LOG(L_DBG) << "plb.list->entries[0].binary : " << plb.list->entries[0].binary;
+      LOG(L_DBG) << "plb.list->entries[0].log : " << plb.list->entries[0].log;
+
       // printf("after get_proc_list: plb.list addr %d\n", ((uint16_t*)(&plb.list))[0]);
       // LOG(L_DBG) << "plb.list->length" << plb.list->length;
       // printf("after get_proc_list: plb length %d\n", plb.list->length);

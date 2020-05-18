@@ -6,7 +6,7 @@
 #define PK_PROC_NAME_TAG "proktor:"
 #define PK_MON_LOG_FILE "proktor.out"
 
-typedef uint16_t pk_proc_list_size;
+typedef uint32_t pk_proc_list_size;
 
 typedef enum {
   ST_UNAVAILABLE,
@@ -33,7 +33,7 @@ typedef struct __pk_proc {
 
 typedef struct __pk_proc_list {
   pk_proc_list_size length;
-  pk_proc list[];
+  pk_proc entries[];
 } pk_proc_list;
 
 
