@@ -37,3 +37,6 @@ build
 out
 logs
 proktor_logs
+
+# Proktor files
+*.md

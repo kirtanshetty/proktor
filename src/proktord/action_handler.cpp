@@ -63,6 +63,7 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     // Decide instance iid
     LOG(L_MSG) << "outside iid:" << pkp_instance->iid;
     if(!pkp_instance->iid){
+      pkp_instance->iid = 1;
       LOG(L_MSG) << "inside iid:" << pkp_instance->iid;
       proc_list_buf plb;
       printf("before: plb %d\n", plb);
@@ -75,10 +76,12 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
 
       get_proc_list(pkm_instance->pk_md, &plb);
       add_proc_to_list(pkp_instance, &plb);
+      // dump_proc_list(pkm_instance->pk_md, &plb);
 
       printf("after pkp_instance->pid %d\n", pkp_instance->pid);
       printf("after pkp_instance->m_pid %d\n", pkp_instance->m_pid);
       printf("after pkp_instance->name %s\n", pkp_instance->name);
+
       printf("after get_proc_list: plb %p\n", plb);
       printf("after get_proc_list: &plb.list %p\n", &plb.list);
       printf("after get_proc_list: plb.list->length %d\n", plb.list->length);
@@ -90,6 +93,12 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
       LOG(L_DBG) << "plb.list->entries[0].binary : " << plb.list->entries[0].binary;
       LOG(L_DBG) << "plb.list->entries[0].log : " << plb.list->entries[0].log;
 
+      LOG(L_DBG) << "plb.list->entries[1].pid : " << plb.list->entries[1].pid;
+      LOG(L_DBG) << "plb.list->entries[1].m_pid : " << plb.list->entries[1].m_pid;
+      LOG(L_DBG) << "plb.list->entries[1].name : " << plb.list->entries[1].name;
+      LOG(L_DBG) << "plb.list->entries[1].binary : " << plb.list->entries[1].binary;
+      LOG(L_DBG) << "plb.list->entries[1].log : " << plb.list->entries[1].log;
+
       // printf("after get_proc_list: plb.list addr %d\n", ((uint16_t*)(&plb.list))[0]);
       // LOG(L_DBG) << "plb.list->length" << plb.list->length;
       // printf("after get_proc_list: plb length %d\n", plb.list->length);
@@ -99,7 +108,6 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
       printf("after: plb %p\n", &plb);
       printf("after: plb.list %p\n", &plb.list);
       // LOG(L_MSG) << "plb.list.length:" << plb.list->length;
-      pkp_instance->iid = 1;
     }
 
     pkp_instance->pid = __start_new_process();
