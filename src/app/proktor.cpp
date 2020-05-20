@@ -42,8 +42,8 @@ void init_options(int count, char** args, pk_proc_options* ppo){
   if(!vaild_dir_path((char*)pp) || !vaild_dir_path((char*)pplp))
     exit_process(0, "invalid (PROKTOR_PATH|PROKTOR_PROCESS_LOG_PATH) value. Directory with write access needed for application files.");
 
-  strcpy(ppo->pk_log_path, pp);
-  strcpy(ppo->pk_proc_log_path, pplp);
+  strcpy(ppo->pk_path, pp);
+  strcpy(ppo->pk_log_path, pplp);
 
   LOG(L_DBG) << "PROKTOR_PATH: " << pp;
   LOG(L_DBG) << "PROKTOR_PROCESS_LOG_PATH: " << pplp;

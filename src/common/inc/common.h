@@ -21,8 +21,8 @@ typedef enum {
 typedef struct __pk_proc_options{
   pk_proc_action_vals action;
   pk_name_t pk_proc_name[PK_PROC_NAME_LENGTH];
+  pk_name_t pk_path[FILE_PATH_LENGTH];
   pk_name_t pk_log_path[FILE_PATH_LENGTH];
-  pk_name_t pk_proc_log_path[FILE_PATH_LENGTH];
   pk_name_t file_path[FILE_PATH_LENGTH];
   pk_name_t bin_path[FILE_PATH_LENGTH];
 } pk_proc_options;

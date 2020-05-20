@@ -7,14 +7,11 @@
 #include <metadata.h>
 #include <common.h>
 
-void get_proc_list(char* path, proc_list_buf* _plb){
+void init_proc_list(char* path, proc_list_buf* _plb){
   FBEG;
   struct stat st;
-  printf("_plb %p\n", _plb);
-  printf("_plb %p\n", &_plb->buf);
 
   if(stat(path, &st) == 0){
-    printf("inside if\n");
     size_t size = st.st_size;
     _plb->buf = (uint8_t*)malloc(sizeof(uint8_t) * size);
 
@@ -23,13 +20,6 @@ void get_proc_list(char* path, proc_list_buf* _plb){
 
     FILE* f = fopen(path, "rb");
     size_t n = fread(_plb->buf, 1, size, f);
-
-    printf("n %u\n", n);
-    printf("get_proc_list:_plb->list->length %u\n", _plb->list->length);
-    printf("get_proc_list:_plb->list->entries[0].name %s\n", _plb->list->entries[0].name);
-    printf("get_proc_list:_plb->list->entries[0].pid %u \n", _plb->list->entries[0].pid);
-    printf("get_proc_list:_plb->list->entries[0].m_pid %u \n", _plb->list->entries[0].m_pid);
-    // printf("_plb->list->length %u\n", _plb->list->entries[0]);
 
     if(n != size)
       exit_process(1, "get_process_list:file read size mismatch (possible corruption)");
@@ -40,35 +30,41 @@ void get_proc_list(char* path, proc_list_buf* _plb){
   FEND;
 }
 
+void deinit_proc_list(proc_list_buf* _plb){
+  free(_plb->buf);
+  _plb = NULL;
+}
+
+void commit_proc_list(char* path, proc_list_buf* _plb){
+  FBEG;
+
+  FILE* pFile = fopen(path, "w");
+  fwrite(_plb->buf, ((_plb->list->length * sizeof(pk_proc)) + sizeof(pk_proc_list_len_t)), 1, pFile);
+
+  FEND;
+  // int fd = open(PK_METADATA_FILE, O_CREAT);
+  // flock(fd, LOCK_EX);
+
+  // unlink(lockfile);
+  // flock(fd, LOCK_UN);
+}
+
 void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb){
   FBEG;
 
-  // uint32_t pk_proc_size = sizeof(pk_proc);
-  printf("add_proc_to_list: pk_proc_size %u, %u\n", sizeof(pk_proc), _plb->list->length);
-
-
   uint32_t pk_proc_buf_size = 0, old_buf_size = 0;
-  printf("add_proc_to_list: pk_proc_size %p\n", _plb->list);
 
   if(_plb->list){
-    printf("if condition %d\n", _plb->list->length);
     old_buf_size = (_plb->list->length * sizeof(pk_proc)) + sizeof(pk_proc_list_len_t);
     pk_proc_buf_size = old_buf_size + sizeof(pk_proc);
   }
-  else{
-    printf("else condition\n");
+  else
     pk_proc_buf_size = sizeof(pk_proc) + sizeof(pk_proc_list_len_t);
-  }
-
-  printf("pk_proc_buf_size %u\n", pk_proc_buf_size);
 
   uint8_t* new_buf = (uint8_t*)malloc(pk_proc_buf_size);
   memset(new_buf, 0, pk_proc_buf_size);
-  printf("2 %p , %p\n", new_buf, (new_buf + sizeof(pk_proc_list_len_t)));
 
-  printf("before if _plb->buf %p\n", _plb->buf);
   if(_plb->buf){
-    printf("inside the if condition _plb->buf %u\n", old_buf_size);
     memcpy(new_buf, _plb->buf, old_buf_size);
     memcpy(new_buf + old_buf_size, new_proc, sizeof(pk_proc));
 
@@ -79,56 +75,45 @@ void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb){
   _plb->buf = new_buf;
   _plb->list->length += 1;
 
-  printf("before the end %u\n", _plb->list->length);
-  printf("_plb->list->entries[0].m_pid %u\n", _plb->list->entries[0].m_pid);
-  printf("_plb->list->entries[1].m_pid %u\n", _plb->list->entries[1].m_pid);
+  FEND;
+}
 
+void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb){
+  FBEG;
 
-  // printf("_plb->buf _plb->buf %p\n", _plb->buf);
-  // printf("_plb->buf _plb->list %p\n", _plb->list);
-  // printf("_plb->buf &_plb->list->length %p\n", &_plb->list->length);
-  // printf("_plb->buf &_plb->list->entries %p\n", &_plb->list->entries);
+  bool is_file = strlen(new_proc->file) ? true : false;
+  new_proc->iid = 0;
 
-  // printf("_plb->buf m_pid %u\n", (*(pid_t*)(_plb->buf + 4 + sizeof(pid_t))));
-  // printf("_plb->list m_pid %u\n", (*(pid_t*)(_plb->list + 4 + sizeof(pid_t))));
+  for(uint32_t i = 0; i < _plb->list->length; i++){
+    if(!strcmp(new_proc->binary, _plb->list->entries[i].binary)){
+      if(is_file && strcmp(new_proc->file, _plb->list->entries[i].file))
+        continue;
 
-  // printf("_plb->buf iid %u\n", (*(pk_inst_t*)(_plb->buf + 4 + 4 + 4)));
-  // printf("_plb->buf name %s\n", (pk_name_t*)(_plb->buf + 4 + 4 + 4 + 2));
-  // printf("new_buf name %s\n", (pk_name_t*)(new_buf + 4 + 4 + 4 + 2));
+      if(new_proc->iid < _plb->list->entries[i].iid)
+        new_proc->iid = _plb->list->entries[i].iid;
+    }
+  }
 
-  printf("---------------------------------------\n");
-
-  printf("add_proc_to_list:_plb->list->length %u \n", _plb->list->length);
-  printf("add_proc_to_list:_plb->list->entries[0].pid %u \n", _plb->list->entries[0].pid);
-  printf("add_proc_to_list:_plb->list->entries[0].m_pid %u \n", _plb->list->entries[0].m_pid);
-  printf("add_proc_to_list:_plb->list->entries[0].name %s \n", _plb->list->entries[0].name);
-
-  // printf("3\n");
-  // memcpy(new_buf + pk_proc_buf_size, new_proc, pk_proc_size);
-  // printf("4\n");
-
-  // free(_plb->buf);
-  // printf("5\n");
-  // _plb->buf = new_buf;
-  // printf("6\n");
-  // _plb->list->length += 1;
+  new_proc->iid += 1;
 
   FEND;
 }
 
-void dump_proc_list(char* path, proc_list_buf* _plb){
-  FBEG;
-
-  FILE* pFile = fopen(path, "w");
-  fwrite(_plb->buf, ((_plb->list->length * sizeof(pk_proc)) + sizeof(pk_proc_list_len_t)), 1, pFile);
-
-  free(_plb->buf);
-  _plb = NULL;
-
-  FEND;
-  // int fd = open(PK_METADATA_FILE, O_CREAT);
-  // flock(fd, LOCK_EX);
-
-  // unlink(lockfile);
-  // flock(fd, LOCK_UN);
+void print_proc_list(proc_list_buf* _plb){
+  fprintf(stdout, "Proktor process list table. List size = %u\n", _plb->list->length);
+  fprintf(stdout, "%s %5s %8s %24s %9s %27s\n", "PID", "MID", "NAME", "IID", "BIN", "FILE");
+  fprintf(stdout, "---------------------------------------------------------------------------------------\n");
+  if(_plb->list->length){
+    for(uint32_t i = 0; i < _plb->list->length; i++){
+      fprintf(stdout, "%u", _plb->list->entries[i].pid);
+      fprintf(stdout, "%10u", _plb->list->entries[i].m_pid);
+      fprintf(stdout, "%20s", _plb->list->entries[i].name);
+      fprintf(stdout, "%10u", _plb->list->entries[i].iid);
+      fprintf(stdout, "%20s", _plb->list->entries[i].binary);
+      fprintf(stdout, "%20s\n", strlen(_plb->list->entries[i].file) ? _plb->list->entries[i].file : "NULL");
+    }
+  }
+  else{
+    fprintf(stdout, "no entries :(\n");
+  }
 }
