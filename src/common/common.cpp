@@ -9,8 +9,8 @@
 
 void exit_process(int code, const char* msg){
   if(msg){
-    LOG(L_ERR) << "Exit message: " << msg;
+    LOG(L_FAT) << "Exit message: " << msg;
   }
-  LOG(L_ERR) << "Exiting proktor.";
+  LOG(L_FAT) << "Exiting proktor.";
   exit(code);
 }

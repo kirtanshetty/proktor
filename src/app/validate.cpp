@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include <proktor.h>
 #include <validate.h>
@@ -39,5 +40,15 @@ bool vaild_dir_path(char* path){
 }
 
 bool vaild_pk_proc_name(char* name){
+  return true;
+}
+
+bool valid_integer(char* input){
+  while(*input){
+    if(!isdigit(*input))
+      return false;
+    input++;
+  }
+
   return true;
 }

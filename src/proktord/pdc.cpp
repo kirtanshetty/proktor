@@ -38,6 +38,9 @@ void run_proc_h(pk_proc_options *ppo){
   get_pk_file(ppo->pk_log_path, pkp.log, PK_MON_LOG_FILE);
   get_pk_file(ppo->pk_path, pkm.pk_md, PK_METADATA_FILE);
 
+  if(ppo->iid)
+    pkp.iid = ppo->iid;
+
   pkpah_map[ppo->action].handler(&pkm, &pkp);
 
   FEND;

@@ -7,26 +7,35 @@
 #include <logger.h>
 #include <pdc.h>
 
+#define MANDATORY_STR "(Mandatory)"
+#define LINE_BREAK "\n"
+
 void help_menu(){
-  fprintf(stdout, LINE_DIVISION);
-  fprintf(stdout, "Help menu");
-  fprintf(stdout, LINE_DIVISION);
-  fprintf(stdout, "Usage:");
-  fprintf(stdout, "a - action");
-  fprintf(stdout, "f - program file path");
-  fprintf(stdout, "h - help menu");
-  fprintf(stdout, LINE_DIVISION);
+  fprintf(stdout, LINE_DIVISION LINE_BREAK);
+  fprintf(stdout, "Help menu" LINE_BREAK);
+  fprintf(stdout, LINE_DIVISION LINE_BREAK);
+  fprintf(stdout, "Usage:" LINE_BREAK);
+  fprintf(stdout, "a - action " MANDATORY_STR LINE_BREAK);
+  fprintf(stdout, "f - program file path" LINE_BREAK);
+  fprintf(stdout, "h - help menu" LINE_BREAK);
+  fprintf(stdout, LINE_DIVISION LINE_BREAK);
 }
 
 void invalid_option(char opt){
-  LOG(L_ERR) << "invalid option:\n" << opt;
+  LOG(L_FAT) << "invalid option:\n" << opt;
 }
 
 void invalid_option_value(char opt, char* val = NULL){
   if(val == NULL)
-    LOG(L_ERR) << "option \"" << opt << "\" needs a value";
+    LOG(L_FAT) << "option \"" << opt << "\" needs a value";
   else
-    LOG(L_ERR) << "invalid value \"" << val << "\" for option \""<< opt <<"\".";
+    LOG(L_FAT) << "invalid value \"" << val << "\" for option \""<< opt <<"\".";
+}
+
+bool mandatory_opt_check(pk_proc_options* ppo){
+  if(!ppo->action) return false;
+
+  return true;
 }
 
 void init_options(int count, char** args, pk_proc_options* ppo){
@@ -48,7 +57,7 @@ void init_options(int count, char** args, pk_proc_options* ppo){
   LOG(L_DBG) << "PROKTOR_PATH: " << pp;
   LOG(L_DBG) << "PROKTOR_PROCESS_LOG_PATH: " << pplp;
 
-  while((opt = getopt(count, args, ":ha:f:n:e:")) != -1){
+  while((opt = getopt(count, args, ":ha:f:n:e:i:")) != -1){
     switch(opt){
       case 'a':{
         int8_t act = get_vaild_action(optarg);
@@ -84,6 +93,14 @@ void init_options(int count, char** args, pk_proc_options* ppo){
 
         break;
       }
+      case 'i':{
+        if(valid_integer(optarg))
+          ppo->iid = atoi(optarg);
+        else
+          exit_process(0, "invalid instance id for -i.");
+
+        break;
+      }
       case 'h':
         help_menu();
         exit_process(0);
@@ -98,12 +115,20 @@ void init_options(int count, char** args, pk_proc_options* ppo){
     }
   }
 
+  if(!mandatory_opt_check(ppo)){
+    help_menu();
+    exit_process(0, "mandatory options missing.");
+  }
+
   FEND;
 }
 
 int main(int argc, char **argv){
   pk_proc_options ppo;
+
+  memset(&ppo, 0, sizeof(pk_proc_options));
   init_options(argc, argv, &ppo);
   run_proc_h(&ppo);
+
   return 0;
 }

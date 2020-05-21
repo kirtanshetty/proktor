@@ -99,6 +99,10 @@ void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb){
   FEND;
 }
 
+bool is_used_instance_id(proc_list_buf* _plb){
+  return true;
+}
+
 void print_proc_list(proc_list_buf* _plb){
   fprintf(stdout, "Proktor process list table. List size = %u\n", _plb->list->length);
   fprintf(stdout, "%s %5s %8s %24s %9s %27s\n", "PID", "MID", "NAME", "IID", "BIN", "FILE");

@@ -61,25 +61,23 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
 
   while(true){
     // Decide instance iid
-    // LOG(L_MSG) << "outside iid:" << pkp_instance->iid;
     proc_list_buf plb;
     memset(&plb, 0, sizeof(proc_list_buf));
     init_proc_list(pkm_instance->pk_md, &plb);
     LOG(L_DBG) << "plb.list->length : " << plb.list->length;
 
     if(!pkp_instance->iid){
-      pkp_instance->iid = 1;
-      // printf("before: plb %p\n", plb);
-
-      // sleep(5);
-      // LOG(L_DBG) << "before print_proc_list plb.list->length : " << plb.list->length;
-      print_proc_list(&plb);
       get_instance_id_for_proc(pkp_instance, &plb);
       LOG(L_DBG) << "new instance id new_proc->iid : " << pkp_instance->iid;
-      return;
-      add_proc_to_list(pkp_instance, &plb);
-      // deinit_proc_list(pkm_instance->pk_md, &plb);
     }
+
+    if(!is_used_instance_id(&plb)){
+      LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
+      exit_process(0, "please provide a new instance id.");
+    }
+
+    add_proc_to_list(pkp_instance, &plb);
+    print_proc_list(&plb);
 
     pkp_instance->pid = __start_new_process();
     if(pkp_instance->pid == 0){
