@@ -15,8 +15,8 @@ void deinit_proc_list(proc_list_buf* _plb);
 void commit_proc_list(char* path, proc_list_buf* _plb);
 
 void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb);
-void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb);
-bool is_used_instance_id(pk_proc* new_proc, proc_list_buf* _plb);
-void print_proc_list(proc_list_buf* _plb);
+void get_instance_id_for_proc(pk_proc* new_proc, pk_proc_list* list);
+bool is_used_instance_id(pk_proc* new_proc, pk_proc_list* list);
+void print_proc_list(pk_proc_list* list);
 
 #endif

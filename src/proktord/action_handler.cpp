@@ -69,14 +69,14 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     init_proc_list(pkm_instance->pk_md, &plb);
     LOG(L_DBG) << "plb.list->length : " << plb.list->length;
 
-    print_proc_list(&plb);
+    print_proc_list(plb.list);
 
     if(!pkp_instance->iid){
-      get_instance_id_for_proc(pkp_instance, &plb);
+      get_instance_id_for_proc(pkp_instance, plb.list);
       LOG(L_DBG) << "new instance id new_proc->iid : " << pkp_instance->iid;
     }
 
-    if(is_used_instance_id(pkp_instance, &plb)){
+    if(is_used_instance_id(pkp_instance, plb.list)){
       LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
       exit_process(0, "please provide a new instance id.");
     }

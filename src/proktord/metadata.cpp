@@ -78,19 +78,19 @@ void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb){
   FEND;
 }
 
-void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb){
+void get_instance_id_for_proc(pk_proc* new_proc, pk_proc_list* list){
   FBEG;
 
   bool is_file = strlen(new_proc->file) ? true : false;
   new_proc->iid = 0;
 
-  for(uint32_t i = 0; i < _plb->list->length; i++){
-    if(!strcmp(new_proc->binary, _plb->list->entries[i].binary)){
-      if(is_file && strcmp(new_proc->file, _plb->list->entries[i].file))
+  for(uint32_t i = 0; i < list->length; i++){
+    if(!strcmp(new_proc->binary, list->entries[i].binary)){
+      if(is_file && strcmp(new_proc->file, list->entries[i].file))
         continue;
 
-      if(new_proc->iid < _plb->list->entries[i].iid)
-        new_proc->iid = _plb->list->entries[i].iid;
+      if(new_proc->iid < list->entries[i].iid)
+        new_proc->iid = list->entries[i].iid;
     }
   }
 
@@ -99,15 +99,15 @@ void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb){
   FEND;
 }
 
-bool is_used_instance_id(pk_proc* new_proc, proc_list_buf* _plb){
+bool is_used_instance_id(pk_proc* new_proc, pk_proc_list* list){
   bool is_file = strlen(new_proc->file) ? true : false;
 
-  for(uint32_t i = 0; i < _plb->list->length; i++){
-    if(!strcmp(new_proc->binary, _plb->list->entries[i].binary)){
-      if(is_file && strcmp(new_proc->file, _plb->list->entries[i].file))
+  for(uint32_t i = 0; i < list->length; i++){
+    if(!strcmp(new_proc->binary, list->entries[i].binary)){
+      if(is_file && strcmp(new_proc->file, list->entries[i].file))
         continue;
 
-      if(new_proc->iid == _plb->list->entries[i].iid)
+      if(new_proc->iid == list->entries[i].iid)
         return true;
     }
   }
@@ -115,18 +115,18 @@ bool is_used_instance_id(pk_proc* new_proc, proc_list_buf* _plb){
   return false;
 }
 
-void print_proc_list(proc_list_buf* _plb){
-  fprintf(stdout, "Proktor process list table. List size = %u\n", _plb->list->length);
+void print_proc_list(pk_proc_list* list){
+  fprintf(stdout, "Proktor process list table. List size = %u\n", list->length);
   fprintf(stdout, "%s %5s %8s %24s %9s %27s\n", "PID", "MID", "NAME", "IID", "BIN", "FILE");
   fprintf(stdout, "---------------------------------------------------------------------------------------\n");
-  if(_plb->list->length){
-    for(uint32_t i = 0; i < _plb->list->length; i++){
-      fprintf(stdout, "%u", _plb->list->entries[i].pid);
-      fprintf(stdout, "%10u", _plb->list->entries[i].m_pid);
-      fprintf(stdout, "%20s", _plb->list->entries[i].name);
-      fprintf(stdout, "%10u", _plb->list->entries[i].iid);
-      fprintf(stdout, "%20s", _plb->list->entries[i].binary);
-      fprintf(stdout, "%20s\n", strlen(_plb->list->entries[i].file) ? _plb->list->entries[i].file : "NULL");
+  if(list->length){
+    for(uint32_t i = 0; i < list->length; i++){
+      fprintf(stdout, "%u", list->entries[i].pid);
+      fprintf(stdout, "%10u", list->entries[i].m_pid);
+      fprintf(stdout, "%20s", list->entries[i].name);
+      fprintf(stdout, "%10u", list->entries[i].iid);
+      fprintf(stdout, "%20s", list->entries[i].binary);
+      fprintf(stdout, "%20s\n", strlen(list->entries[i].file) ? list->entries[i].file : "NULL");
     }
   }
   else{
