@@ -21,6 +21,9 @@ pid_t __start_new_process(){
 }
 
 void __redirect_output(char* pk_out, char* pk_err){
+  printf("pk_out: %s\n", pk_out);
+  printf("pk_err: %s\n", pk_err);
+
   int fd_out = OPEN_LOG(pk_out);
   int fd_err = OPEN_LOG(pk_err);
 
@@ -66,18 +69,19 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     init_proc_list(pkm_instance->pk_md, &plb);
     LOG(L_DBG) << "plb.list->length : " << plb.list->length;
 
+    print_proc_list(&plb);
+
     if(!pkp_instance->iid){
       get_instance_id_for_proc(pkp_instance, &plb);
       LOG(L_DBG) << "new instance id new_proc->iid : " << pkp_instance->iid;
     }
 
-    if(!is_used_instance_id(&plb)){
+    if(is_used_instance_id(pkp_instance, &plb)){
       LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
       exit_process(0, "please provide a new instance id.");
     }
 
     add_proc_to_list(pkp_instance, &plb);
-    print_proc_list(&plb);
 
     pkp_instance->pid = __start_new_process();
     if(pkp_instance->pid == 0){
@@ -136,6 +140,12 @@ int restart_pk_proc(pk_mon *pkm, pk_proc *pkp){
 }
 
 int status_pk_proc(pk_mon *pkm, pk_proc *pkp){
+  FBEG;
+  FEND;
+  return 0;
+}
+
+int none_pk_proc(pk_mon *pkm, pk_proc *pkp){
   FBEG;
   FEND;
   return 0;

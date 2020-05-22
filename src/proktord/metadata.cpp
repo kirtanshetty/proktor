@@ -99,8 +99,20 @@ void get_instance_id_for_proc(pk_proc* new_proc, proc_list_buf* _plb){
   FEND;
 }
 
-bool is_used_instance_id(proc_list_buf* _plb){
-  return true;
+bool is_used_instance_id(pk_proc* new_proc, proc_list_buf* _plb){
+  bool is_file = strlen(new_proc->file) ? true : false;
+
+  for(uint32_t i = 0; i < _plb->list->length; i++){
+    if(!strcmp(new_proc->binary, _plb->list->entries[i].binary)){
+      if(is_file && strcmp(new_proc->file, _plb->list->entries[i].file))
+        continue;
+
+      if(new_proc->iid == _plb->list->entries[i].iid)
+        return true;
+    }
+  }
+
+  return false;
 }
 
 void print_proc_list(proc_list_buf* _plb){

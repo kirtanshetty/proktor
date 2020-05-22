@@ -11,7 +11,8 @@ typedef uint16_t pk_inst_t;
 typedef char pk_name_t;
 
 typedef enum {
-  AC_START = 1,
+  AC_NONE,
+  AC_START,
   AC_STOP,
   AC_RESTART,
   AC_STATUS
