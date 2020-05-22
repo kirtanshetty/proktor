@@ -21,9 +21,6 @@ pid_t __start_new_process(){
 }
 
 void __redirect_output(char* pk_out, char* pk_err){
-  printf("pk_out: %s\n", pk_out);
-  printf("pk_err: %s\n", pk_err);
-
   int fd_out = OPEN_LOG(pk_out);
   int fd_err = OPEN_LOG(pk_err);
 
@@ -50,7 +47,6 @@ void __redirect_output(char* pk_out, char* pk_err){
 void __pk_process(pk_proc *pkp_instance){
   pkp_instance->pid = getpid();
   LOG(L_MSG) << "proktor process started with pid:" << pkp_instance->pid;
-  printf("-----------------\n");
   LOG(L_MSG) << "proktor process executing the binary: " << pkp_instance->binary;
   char *argx[]= { pkp_instance->binary, strlen(pkp_instance->file) ? pkp_instance->file : NULL , NULL};
   // EXECTION_CMD(pkp_instance->binary, argx);
@@ -67,21 +63,28 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     proc_list_buf plb;
     memset(&plb, 0, sizeof(proc_list_buf));
     init_proc_list(pkm_instance->pk_md, &plb);
-    LOG(L_DBG) << "plb.list->length : " << plb.list->length;
 
-    print_proc_list(plb.list);
+    if(!pkp_instance->uuid){
+      get_uuid_for_proc(pkp_instance, plb.list);
+      if(!pkp_instance->uuid)
+        exit_process(0, "number of uuid's exhausted");
+
+      LOG(L_DBG) << "new uuid : " << pkp_instance->uuid;
+    }
 
     if(!pkp_instance->iid){
-      get_instance_id_for_proc(pkp_instance, plb.list);
-      LOG(L_DBG) << "new instance id new_proc->iid : " << pkp_instance->iid;
+      get_iid_for_proc(pkp_instance, plb.list);
+      LOG(L_DBG) << "new iid : " << pkp_instance->iid;
     }
 
     if(is_used_instance_id(pkp_instance, plb.list)){
       LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
-      exit_process(0, "please provide a new instance id.");
+      exit_process(0, "please provide a unique instance id.");
     }
 
     add_proc_to_list(pkp_instance, &plb);
+
+    print_proc_list(plb.list);
 
     pkp_instance->pid = __start_new_process();
     if(pkp_instance->pid == 0){
@@ -89,17 +92,25 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
       return;
     }
     else{
-      // update metadata.
+      pkp_instance->st = ST_RUNNING;
       commit_proc_list(pkm_instance->pk_md, &plb);
       deinit_proc_list(&plb);
+
       LOG(L_MSG) << "waiting for the child process " << pkp_instance->name << "(" << pkp_instance->pid << ")";
       int wait_stat;
       wait(&wait_stat);
       LOG(L_MSG) << "child process " << pkp_instance->name << "(" << pkp_instance->pid << ")" << " terminated with rc " << wait_stat;
       if(!pk_proc_valid_exit(wait_stat)){
+        pkp_instance->st = ST_STOPPED;
         LOG(L_MSG) << "exiting monitor for " << pkp_instance->name;
         break;
       }
+      else
+        pkp_instance->st = ST_KILLED;
+
+      // proc_list_buf plb;
+      // memset(&plb, 0, sizeof(proc_list_buf));
+      // init_proc_list(pkm_instance->pk_md, &plb);
     }
   }
 }

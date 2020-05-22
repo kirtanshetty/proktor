@@ -40,3 +40,4 @@ proktor_logs
 
 # Proktor files
 *.md
+*.backup

@@ -4,10 +4,13 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#define VERSION 0
+
 #define FILE_PATH_LENGTH 192
 #define PK_PROC_NAME_LENGTH 32
 
 typedef uint16_t pk_inst_t;
+typedef uint16_t pk_act_t;
 typedef char pk_name_t;
 
 typedef enum {

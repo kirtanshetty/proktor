@@ -78,8 +78,11 @@ void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb){
   FEND;
 }
 
-void get_instance_id_for_proc(pk_proc* new_proc, pk_proc_list* list){
-  FBEG;
+void get_iid_for_proc(pk_proc* new_proc, pk_proc_list* list){
+  if(!list){
+    new_proc->iid = 1;
+    return;
+  }
 
   bool is_file = strlen(new_proc->file) ? true : false;
   new_proc->iid = 0;
@@ -95,11 +98,35 @@ void get_instance_id_for_proc(pk_proc* new_proc, pk_proc_list* list){
   }
 
   new_proc->iid += 1;
+}
 
-  FEND;
+void get_uuid_for_proc(pk_proc* new_proc, pk_proc_list* list){
+  if(!list){
+    new_proc->uuid = 1;
+    return;
+  }
+
+  new_proc->uuid = 0;
+  pk_proc_uuid_t max_uuid = ~0;
+  bool dupe = false;
+
+  for(uint32_t u = 0; u < max_uuid; u++){
+    dupe = false;
+    for(uint32_t i = 0; i < list->length; i++){
+      if(u == list->entries[i].uuid){
+        dupe = true;
+        break;
+      }
+    }
+
+    if(!dupe)
+      new_proc->uuid = u;
+  }
 }
 
 bool is_used_instance_id(pk_proc* new_proc, pk_proc_list* list){
+  if(!list) return false;
+
   bool is_file = strlen(new_proc->file) ? true : false;
 
   for(uint32_t i = 0; i < list->length; i++){
