@@ -55,7 +55,8 @@ void __pk_process(pk_proc *pkp_instance){
 void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
   __redirect_output(pkm_instance->log, pkm_instance->log);
 
-  pkm_instance->pid = pkp_instance->m_pid = getpid();
+  pkm_instance->pid = getpid();
+  pkp_instance->m_pid = getpid();
   LOG(L_MSG) << "monitor started with pid:" << pkp_instance->m_pid << ", iid:" << pkp_instance->iid;
 
   while(true){
@@ -64,8 +65,12 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     memset(&plb, 0, sizeof(proc_list_buf));
     init_proc_list(pkm_instance->pk_md, &plb);
 
+    if(plb.map){
+      printf("length %u\n", plb.map->len);
+    }
+
     if(!pkp_instance->uuid){
-      get_uuid_for_proc(pkp_instance, plb.list);
+      get_uuid_for_proc(pkp_instance, plb.map);
       if(!pkp_instance->uuid)
         exit_process(0, "number of uuid's exhausted");
 
@@ -73,18 +78,18 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     }
 
     if(!pkp_instance->iid){
-      get_iid_for_proc(pkp_instance, plb.list);
+      get_iid_for_proc(pkp_instance, plb.map);
       LOG(L_DBG) << "new iid : " << pkp_instance->iid;
     }
 
-    if(is_used_instance_id(pkp_instance, plb.list)){
+    if(is_used_instance_id(pkp_instance, plb.map)){
       LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
       exit_process(0, "please provide a unique instance id.");
     }
 
     add_proc_to_list(pkp_instance, &plb);
 
-    print_proc_list(plb.list);
+    print_proc_list(plb.map);
 
     pkp_instance->pid = __start_new_process();
     if(pkp_instance->pid == 0){
@@ -93,8 +98,8 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     }
     else{
       pkp_instance->st = ST_RUNNING;
-      commit_proc_list(pkm_instance->pk_md, &plb);
-      deinit_proc_list(&plb);
+      // commit_proc_list(pkm_instance->pk_md, &plb);
+      // deinit_proc_list(&plb);
 
       LOG(L_MSG) << "waiting for the child process " << pkp_instance->name << "(" << pkp_instance->pid << ")";
       int wait_stat;

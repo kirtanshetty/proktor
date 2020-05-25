@@ -6,7 +6,7 @@
 #define PK_PROC_NAME_TAG "proktor:"
 #define PK_MON_LOG_FILE "proktor.out"
 
-typedef uint16_t pk_proc_list_len_t;
+typedef uint32_t pk_proc_list_len_t;
 typedef uint16_t pk_proc_list_ver_t;
 
 typedef uint16_t pk_proc_stat_t;
@@ -41,28 +41,15 @@ typedef struct __pk_proc {
   pk_name_t log[FILE_PATH_LENGTH];
 } pk_proc;
 
-typedef struct __pk_proc_list {
+#define PK_PROC_FILE_HEADER_SIZE 8
+
+typedef struct __pk_proc_file_map {
+  pk_proc_list_len_t len;
+
+  uint16_t reserved;
   pk_proc_list_ver_t ver = VERSION;
-  pk_proc_list_len_t length;
-  pk_proc entries[];
-} pk_proc_list;
 
-
-// list of processes
-// typedef struct __pk_proc_list_meta {
-//   uint32_t count;
-// } pk_proc_list_meta;
-
-// definition of a process handler
-// class pk_proc_h {
-// private:
-//   pk_proc_action_vals action;
-//   pk_proc pkp;
-//   pk_mon pkm;
-
-// public:
-//   pk_proc_h(pk_proc_options *ppo);
-//   // void run();
-// };
+  pk_proc list[];
+} pk_proc_file_map;
 
 #endif

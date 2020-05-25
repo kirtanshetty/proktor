@@ -7,7 +7,7 @@
 
 typedef union __proc_list_buf {
   uint8_t* buf;
-  pk_proc_list* list;
+  pk_proc_file_map* map;
 } proc_list_buf;
 
 void init_proc_list(char* path, proc_list_buf* _plb);
@@ -15,9 +15,9 @@ void deinit_proc_list(proc_list_buf* _plb);
 void commit_proc_list(char* path, proc_list_buf* _plb);
 
 void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb);
-void get_uuid_for_proc(pk_proc* new_proc, pk_proc_list* list);
-void get_iid_for_proc(pk_proc* new_proc, pk_proc_list* list);
-bool is_used_instance_id(pk_proc* new_proc, pk_proc_list* list);
-void print_proc_list(pk_proc_list* list);
+void get_uuid_for_proc(pk_proc* new_proc, pk_proc_file_map* map);
+void get_iid_for_proc(pk_proc* new_proc, pk_proc_file_map* map);
+bool is_used_instance_id(pk_proc* new_proc, pk_proc_file_map* map);
+void print_proc_list(pk_proc_file_map* map);
 
 #endif
