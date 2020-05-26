@@ -15,6 +15,7 @@ void deinit_proc_list(proc_list_buf* _plb);
 void commit_proc_list(char* path, proc_list_buf* _plb);
 
 void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb);
+void update_proc_obj(pk_proc* proc, pk_proc_file_map* map);
 void get_uuid_for_proc(pk_proc* new_proc, pk_proc_file_map* map);
 void get_iid_for_proc(pk_proc* new_proc, pk_proc_file_map* map);
 bool is_used_instance_id(pk_proc* new_proc, pk_proc_file_map* map);

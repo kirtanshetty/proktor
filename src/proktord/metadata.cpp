@@ -20,6 +20,7 @@ void init_proc_list(char* path, proc_list_buf* _plb){
 
     FILE* f = fopen(path, "rb");
     size_t n = fread(_plb->buf, 1, size, f);
+    fclose(f);
 
     if(n != size)
       exit_process(1, "get_process_list:file read size mismatch (possible corruption)");
@@ -27,20 +28,31 @@ void init_proc_list(char* path, proc_list_buf* _plb){
   else{
     LOG(L_MSG) << "get_process_list: file stat issue for " << path;
   }
+
+  printf("_plb %p\n", _plb);
+  printf("_plb->buf %p\n", _plb->buf);
+
   FEND;
 }
 
 void deinit_proc_list(proc_list_buf* _plb){
+  FBEG;
+
+  printf("_plb %p\n", _plb);
+  printf("_plb->buf %p\n", _plb->buf);
+
   free(_plb->buf);
-  _plb = NULL;
+  _plb->buf = NULL;
+
+  FEND;
 }
 
 void commit_proc_list(char* path, proc_list_buf* _plb){
   FBEG;
 
-  FILE* pFile = fopen(path, "w");
-  fwrite(_plb->buf, ((_plb->map->len * sizeof(pk_proc)) + sizeof(pk_proc_list_len_t)), 1, pFile);
-
+  FILE* f = fopen(path, "w");
+  fwrite(_plb->buf, ((_plb->map->len * sizeof(pk_proc)) + PK_PROC_FILE_HEADER_SIZE), 1, f);
+  fclose(f);
   FEND;
   // int fd = open(PK_METADATA_FILE, O_CREAT);
   // flock(fd, LOCK_EX);
@@ -80,6 +92,24 @@ void add_proc_to_list(pk_proc* new_proc, proc_list_buf* _plb){
   _plb->buf = new_buf;
   _plb->map->len += 1;
 
+  printf("_plb %p\n", _plb);
+  printf("_plb->buf %p\n", _plb->buf);
+
+  FEND;
+}
+
+void update_proc_obj(pk_proc* proc, pk_proc_file_map* map){
+  FBEG;
+
+  for(pk_proc_list_len_t i = 0; i < map->len; i++){
+    if(proc->uuid == map->list[i].uuid){
+      map->list[i].pid = proc->pid;
+      map->list[i].m_pid = proc->m_pid;
+      map->list[i].st = proc->st;
+      break;
+    }
+  }
+
   FEND;
 }
 
@@ -92,7 +122,7 @@ void get_iid_for_proc(pk_proc* new_proc, pk_proc_file_map* map){
   bool is_file = strlen(new_proc->file) ? true : false;
   new_proc->iid = 0;
 
-  for(uint32_t i = 0; i < map->len; i++){
+  for(pk_proc_list_len_t i = 0; i < map->len; i++){
     if(!strcmp(new_proc->binary, map->list[i].binary)){
       if(is_file && strcmp(new_proc->file, map->list[i].file))
         continue;
@@ -157,15 +187,15 @@ void print_proc_list(pk_proc_file_map* map){
 
   fprintf(stdout, "Proktor process map table. map size = %u\n", map->len);
 
-  fprintf(stdout, "map->list[0].uuid = %p\n", &map->list[0].uuid);
-  fprintf(stdout, "map->list[0].st = %p\n", &map->list[0].st);
-  fprintf(stdout, "map->list[0].iid = %p\n", &map->list[0].iid);
-  fprintf(stdout, "map->list[0].pid = %p\n", &map->list[0].pid);
-  fprintf(stdout, "map->list[0].pid = %u\n", map->list[0].pid);
-  fprintf(stdout, "map->list[0].m_pid = %p\n", &map->list[0].m_pid);
-  fprintf(stdout, "map->list[0].m_pid = %u\n", map->list[0].m_pid);
-  fprintf(stdout, "map->list[0].name = %p\n", &map->list[0].name);
-  fprintf(stdout, "map->list[0].name = %s\n", map->list[0].name);
+  // fprintf(stdout, "map->list[0].uuid = %p\n", &map->list[0].uuid);
+  // fprintf(stdout, "map->list[0].st = %p\n", &map->list[0].st);
+  // fprintf(stdout, "map->list[0].iid = %p\n", &map->list[0].iid);
+  // fprintf(stdout, "map->list[0].pid = %p\n", &map->list[0].pid);
+  // fprintf(stdout, "map->list[0].pid = %u\n", map->list[0].pid);
+  // fprintf(stdout, "map->list[0].m_pid = %p\n", &map->list[0].m_pid);
+  // fprintf(stdout, "map->list[0].m_pid = %u\n", map->list[0].m_pid);
+  // fprintf(stdout, "map->list[0].name = %p\n", &map->list[0].name);
+  // fprintf(stdout, "map->list[0].name = %s\n", map->list[0].name);
 
 
 

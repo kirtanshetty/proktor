@@ -10,6 +10,6 @@ int VALID_EXIT_SIGNALS[] = {
   9   // SIGKILL
 };
 
-bool pk_proc_valid_exit(int stat);
+bool pk_proc_valid_signal(int stat);
 
 #endif

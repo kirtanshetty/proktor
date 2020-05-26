@@ -41,11 +41,11 @@ void get_pk_file(char* path, char* dest, const char* tag){
   __add_pk_proc_tag(dest, path_length + 1, tag);
 }
 
-bool pk_proc_valid_exit(int stat){
+bool pk_proc_valid_signal(int stat){
   int length = sizeof(VALID_EXIT_SIGNALS)/sizeof(VALID_EXIT_SIGNALS[0]);
 
   for(int i = 0; i < length; i++)
-    if(stat == VALID_EXIT_SIGNALS[i]) return false;
+    if(stat == VALID_EXIT_SIGNALS[i]) return true;
 
-  return true;
+  return false;
 }
