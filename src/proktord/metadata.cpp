@@ -19,8 +19,40 @@ void init_proc_list(char* path, proc_list_buf* _plb){
       exit_process(1, "get_process_list:memory allocation for the map failed");
 
     FILE* f = fopen(path, "rb");
+    // int fd = fileno(f);
+
+    // int fd = open(PK_METADATA_FILE, O_CREAT);
+    // flock(fd, LOCK_EX);
+
+    // unlink(lockfile);
+    // flock(fd, LOCK_UN);
+
     size_t n = fread(_plb->buf, 1, size, f);
     fclose(f);
+
+
+    unsigned char calculated_hash[PK_PROC_FILE_HASH_SIZE];
+    get_md5_hash(calculated_hash, _plb->buf + PK_PROC_FILE_HASH_SIZE, (size - PK_PROC_FILE_HASH_SIZE));
+
+    printf("calculated_hash : ");
+    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%02x", calculated_hash[i]);;
+    printf("\n");
+
+    printf("_plb->map->hash : ");
+    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%02x", _plb->map->hash[i]);;
+    printf("\n");
+
+    printf("comparison : ");
+    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%d", _plb->map->hash[i] != calculated_hash[i] ? 1 : 0);
+    printf("\n");
+
+    int rc = strcmp((const char*)calculated_hash, (const char*)_plb->map->hash);
+    printf("rc %d\n", rc);
+
+
+    if(!is_md5_hash_eq(calculated_hash, _plb->map->hash)){
+      LOG(L_FAT) << "File corruption: " << path;
+    }
 
     if(n != size)
       exit_process(1, "get_process_list:file read size mismatch (possible corruption)");
@@ -49,6 +81,8 @@ void deinit_proc_list(proc_list_buf* _plb){
 
 void commit_proc_list(char* path, proc_list_buf* _plb){
   FBEG;
+
+  get_md5_hash(_plb->map->hash, _plb->buf + PK_PROC_FILE_HASH_SIZE, (_plb->map->len * sizeof(pk_proc)) + (PK_PROC_FILE_HEADER_SIZE - PK_PROC_FILE_HASH_SIZE));
 
   FILE* f = fopen(path, "w");
   fwrite(_plb->buf, ((_plb->map->len * sizeof(pk_proc)) + PK_PROC_FILE_HEADER_SIZE), 1, f);

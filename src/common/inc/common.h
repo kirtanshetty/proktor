@@ -8,6 +8,7 @@
 
 #define FILE_PATH_LENGTH 192
 #define PK_PROC_NAME_LENGTH 32
+#define PK_PROC_FILE_HASH_SIZE MD5_DIGEST_LENGTH
 
 typedef uint16_t pk_inst_t;
 typedef uint16_t pk_act_t;
@@ -33,5 +34,7 @@ typedef struct __pk_proc_options{
 } pk_proc_options;
 
 void exit_process(int code, const char* msg = NULL);
+void get_md5_hash(unsigned char* hash, uint8_t* buf, uint32_t size);
+bool is_md5_hash_eq(unsigned char* hash1, unsigned char* hash2);
 
 #endif
