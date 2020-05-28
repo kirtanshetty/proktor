@@ -58,6 +58,8 @@ void init_options(int count, char** args, pk_proc_options* ppo){
   LOG(L_DBG) << "PROKTOR_PROCESS_LOG_PATH: " << pplp;
 
   while((opt = getopt(count, args, ":ha:f:n:e:i:")) != -1){
+    printf("while loop\n");
+    printf("opt = %c\n", opt);
     switch(opt){
       case 'a':{
         int8_t act = get_vaild_action(optarg);

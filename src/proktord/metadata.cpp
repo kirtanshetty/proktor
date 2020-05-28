@@ -222,14 +222,14 @@ void print_proc_list(pk_proc_file_map* map){
 
 
 
-  fprintf(stdout, "%s %10s %15s %15s %8s %24s %9s %27s\n", "UUID", "STATE", "PID", "MID", "NAME", "IID", "BIN", "FILE");
+  fprintf(stdout, "%s %10s %10s %10s %8s %24s %9s %27s\n", "UUID", "STATE", "PID", "MID", "NAME", "IID", "BIN", "FILE");
   fprintf(stdout, "---------------------------------------------------------------------------------------\n");
 
   for(uint32_t i = 0; i < map->len; i++){
     fprintf(stdout, "%u", map->list[i].uuid);
     fprintf(stdout, "%10u", map->list[i].st);
-    fprintf(stdout, "%15u", map->list[i].pid);
-    fprintf(stdout, "%15u", map->list[i].m_pid);
+    fprintf(stdout, "%12u", map->list[i].pid);
+    fprintf(stdout, "%14u", map->list[i].m_pid);
     fprintf(stdout, "%20s", map->list[i].name);
     fprintf(stdout, "%10u", map->list[i].iid);
     fprintf(stdout, "%20s", map->list[i].binary);
