@@ -34,21 +34,9 @@ void init_proc_list(char* path, proc_list_buf* _plb){
     unsigned char calculated_hash[PK_PROC_FILE_HASH_SIZE];
     get_md5_hash(calculated_hash, _plb->buf + PK_PROC_FILE_HASH_SIZE, (size - PK_PROC_FILE_HASH_SIZE));
 
-    printf("calculated_hash : ");
-    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%02x", calculated_hash[i]);;
-    printf("\n");
-
-    printf("_plb->map->hash : ");
-    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%02x", _plb->map->hash[i]);;
-    printf("\n");
-
-    printf("comparison : ");
-    for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%d", _plb->map->hash[i] != calculated_hash[i] ? 1 : 0);
-    printf("\n");
-
-    int rc = strcmp((const char*)calculated_hash, (const char*)_plb->map->hash);
-    printf("rc %d\n", rc);
-
+    // printf("calculated_hash : ");
+    // for(int i = 0; i < PK_PROC_FILE_HASH_SIZE; i++) printf("%02x", calculated_hash[i]);;
+    // printf("\n");
 
     if(!is_md5_hash_eq(calculated_hash, _plb->map->hash)){
       LOG(L_FAT) << "File corruption: " << path;
@@ -176,10 +164,11 @@ void get_uuid_for_proc(pk_proc* new_proc, pk_proc_file_map* map){
   }
 
   new_proc->uuid = 0;
-  pk_proc_uuid_t max_uuid = ~0;
+  pk_proc_uuid_t max_uuid = 0;
+  max_uuid = ~max_uuid;
   bool dup = false;
 
-  for(uint32_t u = 0; u < max_uuid; u++){
+  for(uint32_t u = 1; u < max_uuid; u++){
     dup = false;
     for(uint32_t i = 0; i < map->len; i++){
       if(u == map->list[i].uuid){
