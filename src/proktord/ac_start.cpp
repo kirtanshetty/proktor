@@ -130,16 +130,20 @@ bool init_proc_obj(pk_proc *pkp, char* path){
       exit_process(0, "number of uuid's exhausted");
 
     LOG(L_DBG) << "new uuid : " << pkp->uuid;
+
+    return false;
   }
 
   if(!pkp->iid){
     get_iid_for_proc(pkp, plb.map);
     LOG(L_DBG) << "new iid : " << pkp->iid;
+    return false;
   }
 
   if(is_used_instance_id(pkp, plb.map)){
     LOG(L_FAT) << "instance id taken already : " << pkp->iid;
     exit_process(0, "please provide a unique instance id.");
+    return false;
   }
 
   pkp->st = ST_INIT;

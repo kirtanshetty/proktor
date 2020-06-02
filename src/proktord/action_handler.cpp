@@ -6,11 +6,11 @@
 int start_pk_proc(pk_mon *pkm, pk_proc *pkp){
   FBEG;
 
-  init_proc_obj(pkp, pkm->pk_md);
-
-  if(!validate_start_action_opts(pkp)){
+  if(init_proc_obj(pkp, pkm->pk_md))
     exit_process(0, VAL_START_AC_MSG);
-  }
+
+  if(!validate_start_action_opts(pkp))
+    exit_process(0, VAL_START_AC_MSG);
 
   int rc = run_start_action(pkm, pkp);
 
