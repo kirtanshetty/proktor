@@ -4,6 +4,7 @@
 #include <proc.h>
 
 int run_start_action(pk_mon *pkm_instance, pk_proc *pkp_instance);
+bool init_proc_obj(pk_proc *pkp, char* path);
 bool validate_start_action_opts(pk_proc *pkp);
 
 // pid_t __start_new_process();

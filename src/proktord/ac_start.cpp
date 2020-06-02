@@ -68,25 +68,6 @@ void __monitor_process(pk_mon *pkm_instance, pk_proc *pkp_instance){
     }
 
     if(is_new_proc){
-      if(!pkp_instance->uuid){
-        get_uuid_for_proc(pkp_instance, plb.map);
-        if(!pkp_instance->uuid)
-          exit_process(0, "number of uuid's exhausted");
-
-        LOG(L_DBG) << "new uuid : " << pkp_instance->uuid;
-      }
-
-      if(!pkp_instance->iid){
-        get_iid_for_proc(pkp_instance, plb.map);
-        LOG(L_DBG) << "new iid : " << pkp_instance->iid;
-      }
-
-      if(is_used_instance_id(pkp_instance, plb.map)){
-        LOG(L_FAT) << "instance id taken already : " << pkp_instance->iid;
-        exit_process(0, "please provide a unique instance id.");
-      }
-
-      add_proc_to_list(pkp_instance, &plb);
       print_proc_list(plb.map);
     }
     else if(pkp_instance->st == ST_STOPPED){
@@ -136,6 +117,36 @@ bool validate_start_action_opts(pk_proc *pkp){
   if(!strlen(pkp->binary)) return false;
 
   return true;
+}
+
+bool init_proc_obj(pk_proc *pkp, char* path){
+  proc_list_buf plb;
+  memset(&plb, 0, sizeof(proc_list_buf));
+  init_proc_list(path, &plb);
+
+  if(!pkp->uuid){
+    get_uuid_for_proc(pkp, plb.map);
+    if(!pkp->uuid)
+      exit_process(0, "number of uuid's exhausted");
+
+    LOG(L_DBG) << "new uuid : " << pkp->uuid;
+  }
+
+  if(!pkp->iid){
+    get_iid_for_proc(pkp, plb.map);
+    LOG(L_DBG) << "new iid : " << pkp->iid;
+  }
+
+  if(is_used_instance_id(pkp, plb.map)){
+    LOG(L_FAT) << "instance id taken already : " << pkp->iid;
+    exit_process(0, "please provide a unique instance id.");
+  }
+
+  pkp->st = ST_INIT;
+
+  add_proc_to_list(pkp, &plb);
+  commit_proc_list(path, &plb);
+  deinit_proc_list(&plb);
 }
 
 int run_start_action(pk_mon *pkm, pk_proc *pkp){

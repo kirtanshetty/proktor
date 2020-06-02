@@ -16,6 +16,7 @@ typedef uint32_t pk_proc_uuid_t;
 
 typedef enum {
   ST_UNAVAILABLE,
+  ST_INIT,
   ST_RUNNING,
   ST_KILLED,
   ST_STOPPED
